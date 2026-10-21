@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="新闻双声点读">
 <meta name="mobile-web-app-capable" content="yes">
-<title>美式新闻双声点读 · 中英对照</title>
+<title>美式新闻自然语音点读 · 中英对照</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" sizes="192x192" href="icon-192.png">
@@ -61,14 +61,9 @@ main{width:min(880px,100%);margin:0 auto;padding:12px}
 .voice-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
 .voice-mode{border:1px solid #cbd5df;border-radius:11px;background:#f6f8fa;color:#425266;padding:10px 8px;font-weight:800;font-size:14px}
 .voice-mode.active{background:var(--navy);color:white;border-color:var(--navy)}
-.control-row{display:grid;grid-template-columns:minmax(0,1fr) 52px 52px 52px;gap:8px;align-items:center}
+.control-row{display:grid;grid-template-columns:minmax(0,1fr) 52px 52px;gap:8px;align-items:center}
 #voiceSelect{width:100%;min-width:0;border:1px solid #cbd5df;border-radius:10px;background:white;padding:10px 8px;font-size:12px;color:#243447}
 .icon-btn{height:44px;border:1px solid #cbd5df;border-radius:11px;background:white;color:var(--navy);font-size:20px;font-weight:800}
-#rateToggle{font-size:13px}
-.rate-panel{display:none;align-items:center;gap:10px;margin-top:9px;padding:8px 10px;border-radius:10px;background:#f3f6f9;color:#425266;font-size:13px}
-.rate-panel.show{display:flex}
-.rate-panel input{flex:1;min-width:0}
-#rateValue{min-width:43px;text-align:right;font-variant-numeric:tabular-nums}
 .status{font-size:11px;color:#7b8793;padding:7px 2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .footer-note{font-size:12px;color:#74808b;line-height:1.7;padding:8px 4px 20px}
 @media(min-width:700px){
@@ -85,11 +80,11 @@ main{width:min(880px,100%);margin:0 auto;padding:12px}
 <header class="masthead">
   <div class="brand-row"><span class="live-dot"></span><span class="brand">WORLD NEWS · LISTENING STUDIO</span></div>
   <h1>美式新闻双声点读</h1>
-  <div class="subtitle">0820–0827 · 中英对照新闻听力练习<br>点击任意英文句子，选择美式男声或女声朗读。</div>
-  <div class="hero-pills"><span>逐句点读</span><span>男声 / 女声</span><span>中文对照</span><span>手机适配</span></div>
+  <div class="subtitle">0820–0827 · 中英对照新闻听力练习<br>点击任意英文句子，使用正常语速聆听美式男声或女声。</div>
+  <div class="hero-pills"><span>逐句点读</span><span>男声 / 女声</span><span>中文对照</span><span>正常语速</span><span>手机适配</span></div>
 </header>
 
-<div class="install-tip"><b>iPhone 使用提示：</b>若已部署到 HTTPS 网址，请用 Safari 打开 → 分享 → 添加到主屏幕。声音由手机系统提供，网页会优先选择可用的美式英语声音。</div>
+<div class="install-tip"><b>iPhone 使用提示：</b>若已部署到 HTTPS 网址，请用 Safari 打开 → 分享 → 添加到主屏幕。网页会优先选择设备提供的高品质美式英语音色；声音质量仍取决于设备可用的语音。</div>
 
 <nav class="day-nav" aria-label="按日期跳转">
 <a href="#day-0">8月20日</a>
@@ -916,7 +911,7 @@ main{width:min(880px,100%);margin:0 auto;padding:12px}
 </article>
 </section>
 <div class="footer-note">
-声音说明：本点读器使用浏览器/设备的语音合成，不是某位真实主播的录音，也不能保证所有设备都提供专业新闻主播音色。它会优先选择 en-US 美式英语，并按男声/女声偏好匹配可用声音。若没有合适声音，可在 iPhone「设置 → 辅助使用 → 朗读内容 → 声音」中下载增强版英语声音。
+声音说明：本点读器会优先选择设备可用的 Natural / Neural / Enhanced / Premium 高品质美式英语音色，并固定为正常语速。它仍是语音合成，不是真人主播录音；如果声音列表里没有高品质音色，网页代码本身无法凭空生成真人音质。iPhone 可在「设置 → 辅助使用 → 朗读内容 → 声音」下载增强版英语声音；电脑 Edge 可优先选择名称带 Online (Natural)、Natural 或 Neural 的声音。
 </div>
 </main>
 
@@ -927,12 +922,8 @@ main{width:min(880px,100%);margin:0 auto;padding:12px}
   </div>
   <div class="control-row">
     <select id="voiceSelect" aria-label="选择英文声音"><option>正在加载声音…</option></select>
-    <button class="icon-btn" id="rateToggle" onclick="toggleRate()" aria-label="调节语速">0.92×</button>
     <button class="icon-btn" onclick="repeatCurrent()" aria-label="重听">↻</button>
     <button class="icon-btn" onclick="stopSpeech()" aria-label="停止">■</button>
-  </div>
-  <div id="ratePanel" class="rate-panel">
-    <span>语速</span><input id="rate" type="range" min="0.55" max="1.25" step="0.05" value="0.92"><span id="rateValue">0.92×</span>
   </div>
   <div id="voiceStatus" class="status">正在寻找美式英语声音…</div>
 </div>
@@ -943,6 +934,7 @@ let voices = [];
 let gender = "male";
 let currentEl = null;
 let currentText = "";
+let currentMode = "sentence";
 let lastCardId = null;
 let activeQueue = [];
 let queueIndex = 0;
@@ -950,20 +942,19 @@ let isQueuePlaying = false;
 
 const voiceSelect = document.getElementById("voiceSelect");
 const voiceStatus = document.getElementById("voiceStatus");
-const rate = document.getElementById("rate");
-const rateValue = document.getElementById("rateValue");
-const rateToggle = document.getElementById("rateToggle");
 
 const maleNames = [
+  "andrew","brian","christopher","eric","guy","roger","steffan","davis",
   "aaron","alex","fred","tom","evan","nathan","ralph","bruce","albert",
-  "daniel","david","guy","davis","jason","tony","matthew","mark","lee",
-  "joey","justin","eric","brian","kevin","roger","stephen","christopher"
+  "daniel","david","jason","tony","matthew","mark","lee","joey","justin",
+  "kevin","stephen","ryan","liam","henry","george","richard"
 ];
 const femaleNames = [
-  "ava","samantha","allison","susan","victoria","zira","jenny","aria","zoe",
-  "nicky","karen","moira","tessa","serena","joanna","michelle","olivia",
-  "emma","amy","kate","sara","laura","emily","jennifer","kendra","kimberly",
-  "salli","ivy","jessica","fiona","monica","lisa","siri voice 2","siri voice 4"
+  "aria","ava","emma","jenny","michelle","monica","nancy","sara","ana",
+  "olivia","allison","susan","victoria","zira","zoe","nicky","karen","moira",
+  "tessa","serena","joanna","amy","kate","laura","emily","jennifer","kendra",
+  "kimberly","salli","ivy","jessica","fiona","lisa","samantha","clara","luna",
+  "natasha","jane","sonia","steffie","siri voice 2","siri voice 4"
 ];
 
 function nameGenderScore(v, g) {
@@ -989,7 +980,11 @@ function voiceScore(v, g) {
   if (lang === "en-us") score += 150;
   else if (lang.startsWith("en-us-")) score += 140;
   else if (lang.startsWith("en")) score += 40;
-  if (/enhanced|premium|natural|neural|online/.test(name)) score += 20;
+  // Strongly prefer neural voices where the browser/device exposes them.
+  if (/online\s*\(natural\)|\bnatural\b|\bneural\b/.test(name)) score += 240;
+  else if (/enhanced|premium/.test(name)) score += 180;
+  else if (/\bonline\b/.test(name)) score += 70;
+  if (/compact|basic|legacy/.test(name)) score -= 35;
   score += nameGenderScore(v, g);
   if (v.default) score += 1;
   return score;
@@ -1025,7 +1020,10 @@ function findBestVoiceIndex(g) {
 function updateStatus() {
   const v = voices[Number(voiceSelect.value)];
   const label = gender === "male" ? "美式男声优先" : "美式女声优先";
-  if (v) voiceStatus.textContent = `${label} · 当前：${v.name} (${v.lang})`;
+  if (v) {
+    const premium = /natural|neural|enhanced|premium/i.test(v.name);
+    voiceStatus.textContent = `${label} · 当前：${v.name}${premium ? " · 高品质音色" : " · 设备默认音色"}`;
+  }
 }
 function setGender(g) {
   gender = g;
@@ -1063,13 +1061,6 @@ function primeVoices() {
 document.addEventListener("touchstart", primeVoices, {once:true, passive:true});
 document.addEventListener("click", primeVoices, {once:true});
 
-function updateRate() {
-  const txt = Number(rate.value).toFixed(2) + "×";
-  rateValue.textContent = txt;
-  rateToggle.textContent = txt;
-}
-rate.addEventListener("input", updateRate);
-function toggleRate(){document.getElementById("ratePanel").classList.toggle("show");}
 
 function clearHighlight() {
   document.querySelectorAll(".sentence.speaking").forEach(el=>el.classList.remove("speaking"));
@@ -1087,13 +1078,15 @@ function getUtterance(text) {
   const v = voices[Number(voiceSelect.value)];
   if (v) {u.voice=v; u.lang=v.lang || "en-US";}
   else u.lang="en-US";
-  u.rate = Number(rate.value);
-  u.pitch = gender === "male" ? 0.96 : 1.0;
+  // Fixed normal speed; leave pitch untouched for a less processed sound.
+  u.rate = 1.0;
+  u.pitch = 1.0;
   u.volume = 1;
   return u;
 }
 function speakSentence(el) {
   stopSpeech();
+  currentMode = "sentence";
   currentText = el.dataset.text || el.textContent;
   currentEl = el;
   el.classList.add("speaking");
@@ -1108,40 +1101,32 @@ function speakSentence(el) {
 }
 function playCard(id) {
   stopSpeech();
+  currentMode = "card";
   lastCardId = id;
   activeQueue = [...document.querySelectorAll(`#${CSS.escape(id)} .sentence`)];
   if (!activeQueue.length) return;
-  queueIndex = 0;
+  currentText = activeQueue.map(el => el.dataset.text || el.textContent).join(" ");
+  currentEl = activeQueue[0];
   isQueuePlaying = true;
-  playNext();
-}
-function playNext() {
-  if (!isQueuePlaying || queueIndex >= activeQueue.length) {
-    isQueuePlaying = false; clearHighlight(); return;
-  }
-  clearHighlight();
-  const el = activeQueue[queueIndex];
-  currentEl = el;
-  currentText = el.dataset.text || el.textContent;
-  el.classList.add("speaking");
-  const r = el.getBoundingClientRect();
-  if (r.top < 75 || r.bottom > window.innerHeight - 145) {
-    el.scrollIntoView({behavior:"smooth", block:"center"});
+  activeQueue.forEach(el => el.classList.add("speaking"));
+  const firstRect = currentEl.getBoundingClientRect();
+  if (firstRect.top < 75 || firstRect.bottom > window.innerHeight - 145) {
+    currentEl.scrollIntoView({behavior:"smooth", block:"center"});
   }
   const u = getUtterance(currentText);
-  u.onend = () => {
-    if (currentEl===el) el.classList.remove("speaking");
-    queueIndex++;
-    playNext();
+  const paragraphEls = [...activeQueue];
+  const finish = () => {
+    paragraphEls.forEach(el => el.classList.remove("speaking"));
+    if (activeQueue.length && activeQueue[0] === paragraphEls[0]) activeQueue = [];
+    currentEl = null;
+    isQueuePlaying = false;
   };
-  u.onerror = () => {
-    if (currentEl===el) el.classList.remove("speaking");
-    queueIndex++;
-    playNext();
-  };
+  u.onend = finish;
+  u.onerror = finish;
   synth.speak(u);
 }
 function repeatCurrent() {
+  if (currentMode === "card" && lastCardId) { playCard(lastCardId); return; }
   if (currentEl) { speakSentence(currentEl); return; }
   if (currentText) {
     const el=[...document.querySelectorAll(".sentence")].find(x=>(x.dataset.text||x.textContent)===currentText);

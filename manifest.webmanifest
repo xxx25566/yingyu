@@ -1,7 +1,7 @@
 {
-  "name": "美式新闻双声点读",
-  "short_name": "新闻双声点读",
-  "description": "0820至0827视频人声中英对照新闻逐句点读",
+  "name": "美式新闻自然语音点读",
+  "short_name": "新闻自然点读",
+  "description": "0820至0827视频人声中英对照新闻点读，固定正常语速并优先选择高品质美式英语音色",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
