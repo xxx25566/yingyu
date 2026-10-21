@@ -1,0 +1,23 @@
+{
+  "name": "美式新闻双声点读",
+  "short_name": "新闻双声点读",
+  "description": "0820至0827视频人声中英对照新闻逐句点读",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#edf1f5",
+  "theme_color": "#142538",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

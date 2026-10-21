@@ -1,0 +1,1158 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#142538">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="新闻双声点读">
+<meta name="mobile-web-app-capable" content="yes">
+<title>美式新闻双声点读 · 中英对照</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" sizes="192x192" href="icon-192.png">
+<style>
+:root{
+  --navy:#142538;--navy2:#203b56;--red:#d94b4b;--paper:#fffefa;--bg:#edf1f5;
+  --ink:#172433;--muted:#6e7a87;--line:#dbe2e9;--gold:#f2c66d;--active:#fff0b8;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",Arial,sans-serif;padding-bottom:calc(110px + env(safe-area-inset-bottom));-webkit-text-size-adjust:100%}
+button,select,input{font:inherit}
+.masthead{background:linear-gradient(120deg,var(--navy),var(--navy2));color:white;padding:24px 18px 20px}
+.brand-row{display:flex;align-items:center;gap:10px}
+.live-dot{width:10px;height:10px;border-radius:50%;background:#fa5a5a;box-shadow:0 0 0 5px #fa5a5a28}
+.brand{font-size:12px;letter-spacing:.16em;font-weight:800;color:#dbe8f4}
+h1{font-size:26px;line-height:1.25;margin:14px 0 7px;font-weight:800}
+.subtitle{font-size:14px;line-height:1.6;color:#d2dce7}
+.hero-pills{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}
+.hero-pills span{font-size:12px;padding:5px 9px;border:1px solid #ffffff3d;border-radius:99px;color:#e7edf4}
+.install-tip{margin:12px 12px 0;background:#fff8e7;border:1px solid #ead9ac;border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.6;color:#62533a}
+@media(display-mode:standalone){.install-tip{display:none}}
+.day-nav{display:flex;gap:8px;overflow-x:auto;padding:12px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:15;scrollbar-width:none}
+.day-nav::-webkit-scrollbar{display:none}
+.day-nav a{white-space:nowrap;text-decoration:none;color:#415266;font-size:13px;font-weight:700;border:1px solid #d7e0e8;padding:8px 12px;border-radius:99px;background:#f8fafc}
+.day-nav a:active,.day-nav a:focus{background:var(--navy);color:white}
+main{width:min(880px,100%);margin:0 auto;padding:12px}
+.day-section{margin:16px 0 28px}
+.day-heading{display:flex;justify-content:space-between;align-items:end;gap:12px;padding:12px 4px 10px;border-bottom:2px solid var(--navy)}
+.day-kicker{font-size:10px;letter-spacing:.17em;color:var(--red);font-weight:900}
+.day-heading h2{margin:3px 0 0;font-size:25px;color:var(--navy)}
+.video-tag{font-size:11px;background:#dfe8f0;color:#42566b;border-radius:6px;padding:5px 7px;white-space:nowrap}
+.news-card{background:var(--paper);border:1px solid #e0e6eb;border-radius:14px;margin:11px 0;overflow:hidden;box-shadow:0 3px 10px #15283b08}
+.news-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:13px 14px;background:#f8fafc;border-bottom:1px solid #e9edf1}
+.news-head h3{margin:0;font-size:15px;color:#30445a}
+.play-paragraph{border:0;border-radius:99px;background:var(--navy);color:white;font-size:12px;padding:7px 10px;white-space:nowrap;cursor:pointer}
+.english-line{padding:13px 14px 4px;font-family:Georgia,"Times New Roman",serif;font-size:19px;line-height:1.9;color:#172433}
+.sentence{display:inline;border:0;padding:2px 3px;margin:0;background:transparent;color:inherit;text-align:left;font-family:inherit;font-size:inherit;line-height:inherit;border-radius:5px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.sentence:hover{background:#e9f0f7}
+.sentence:focus-visible{outline:2px solid #7897b5;outline-offset:1px}
+.sentence.speaking{background:var(--active);box-shadow:0 0 0 2px #e2c65f inset}
+.chinese-line{padding:8px 14px 15px;font-size:16px;line-height:1.85;color:#505c68}
+.sentence-pair{border-bottom:1px solid #edf0f3}
+.sentence-pair:last-child{border-bottom:0}
+.sentence-pair .english-line{padding-bottom:3px}
+.sentence-pair .chinese-line{padding-top:2px}
+.translation-label{display:block;font-size:10px;letter-spacing:.1em;font-weight:800;color:#8a96a2;margin-bottom:4px}
+.paragraph-translation{border-top:1px dashed #e3e7eb;margin-top:7px;padding-top:10px}
+.controls{position:fixed;bottom:0;left:0;right:0;z-index:30;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#fffefaed;border-top:1px solid #dce3ea;box-shadow:0 -6px 22px #17243312;backdrop-filter:blur(16px)}
+.voice-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.voice-mode{border:1px solid #cbd5df;border-radius:11px;background:#f6f8fa;color:#425266;padding:10px 8px;font-weight:800;font-size:14px}
+.voice-mode.active{background:var(--navy);color:white;border-color:var(--navy)}
+.control-row{display:grid;grid-template-columns:minmax(0,1fr) 52px 52px 52px;gap:8px;align-items:center}
+#voiceSelect{width:100%;min-width:0;border:1px solid #cbd5df;border-radius:10px;background:white;padding:10px 8px;font-size:12px;color:#243447}
+.icon-btn{height:44px;border:1px solid #cbd5df;border-radius:11px;background:white;color:var(--navy);font-size:20px;font-weight:800}
+#rateToggle{font-size:13px}
+.rate-panel{display:none;align-items:center;gap:10px;margin-top:9px;padding:8px 10px;border-radius:10px;background:#f3f6f9;color:#425266;font-size:13px}
+.rate-panel.show{display:flex}
+.rate-panel input{flex:1;min-width:0}
+#rateValue{min-width:43px;text-align:right;font-variant-numeric:tabular-nums}
+.status{font-size:11px;color:#7b8793;padding:7px 2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.footer-note{font-size:12px;color:#74808b;line-height:1.7;padding:8px 4px 20px}
+@media(min-width:700px){
+ .masthead{padding:32px max(24px,calc((100% - 880px)/2))}
+ h1{font-size:32px}
+ main{padding:20px}
+ .english-line{font-size:20px}
+ .controls{left:50%;right:auto;transform:translateX(-50%);width:min(880px,100%);border:1px solid #dce3ea;border-bottom:0;border-radius:16px 16px 0 0}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header class="masthead">
+  <div class="brand-row"><span class="live-dot"></span><span class="brand">WORLD NEWS · LISTENING STUDIO</span></div>
+  <h1>美式新闻双声点读</h1>
+  <div class="subtitle">0820–0827 · 中英对照新闻听力练习<br>点击任意英文句子，选择美式男声或女声朗读。</div>
+  <div class="hero-pills"><span>逐句点读</span><span>男声 / 女声</span><span>中文对照</span><span>手机适配</span></div>
+</header>
+
+<div class="install-tip"><b>iPhone 使用提示：</b>若已部署到 HTTPS 网址，请用 Safari 打开 → 分享 → 添加到主屏幕。声音由手机系统提供，网页会优先选择可用的美式英语声音。</div>
+
+<nav class="day-nav" aria-label="按日期跳转">
+<a href="#day-0">8月20日</a>
+<a href="#day-1">8月21日</a>
+<a href="#day-2">8月22日</a>
+<a href="#day-3">8月23日</a>
+<a href="#day-4">8月24日</a>
+<a href="#day-5">8月25日</a>
+<a href="#day-6">8月26日</a>
+<a href="#day-7">8月27日</a>
+</nav>
+
+<main>
+
+    <section class="day-section" id="day-0">
+      <div class="day-heading">
+        <div><span class="day-kicker">NEWS BRIEFING</span><h2>8月20日</h2></div>
+        <span class="video-tag">0820.mp4</span>
+      </div>
+    
+
+        <article class="news-card" id="d0-i0">
+          <div class="news-head">
+            <h3>开场</h3>
+            <button class="play-paragraph" onclick="playCard('d0-i0')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d0-i0-s0" data-text="It&#x27;s 7pm in London." onclick="speakSentence(this)" aria-label="朗读英文句子">It&#x27;s 7pm in London.</button>
+ 
+<button class="sentence" id="d0-i0-s1" data-text="This is The World Today." onclick="speakSentence(this)" aria-label="朗读英文句子">This is The World Today.</button>
+ 
+<button class="sentence" id="d0-i0-s2" data-text="I&#x27;m Ben Thompson." onclick="speakSentence(this)" aria-label="朗读英文句子">I&#x27;m Ben Thompson.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>现在是伦敦时间晚上7点。这里是《今日世界》，我是本·汤普森。</div>
+</article>
+
+        <article class="news-card" id="d0-i1">
+          <div class="news-head">
+            <h3>以色列刑事调查</h3>
+            <button class="play-paragraph" onclick="playCard('d0-i1')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d0-i1-s0" data-text="Israel confirms its soldiers fired at a car in which five-year-old Hind Rajab was killed, along with six relatives in Gaza in 2024." onclick="speakSentence(this)" aria-label="朗读英文句子">Israel confirms its soldiers fired at a car in which five-year-old Hind Rajab was killed, along with six relatives in Gaza in 2024.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>以色列证实，其士兵曾向一辆汽车开火。2024年，五岁的欣德·拉贾卜及其六名亲属在加沙的这辆车内遇难。</div>
+</article>
+
+        <article class="news-card" id="d0-i2">
+          <div class="news-head">
+            <h3>新闻内容</h3>
+            <button class="play-paragraph" onclick="playCard('d0-i2')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d0-i2-s0" data-text="It&#x27;s also opened a criminal investigation into another high-profile attack." onclick="speakSentence(this)" aria-label="朗读英文句子">It&#x27;s also opened a criminal investigation into another high-profile attack.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>以色列还对另一起备受关注的袭击事件展开了刑事调查。</div>
+</article>
+
+        <article class="news-card" id="d0-i3">
+          <div class="news-head">
+            <h3>Meta受审</h3>
+            <button class="play-paragraph" onclick="playCard('d0-i3')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="sentence-pairs">
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d0-i3-s0" data-text="Happening now, Meta on trial." onclick="speakSentence(this)" aria-label="朗读英文句子">Happening now, Meta on trial.</button></div>
+                  <div class="chinese-line">正在进行的新闻：Meta公司受审。</div>
+                </div>
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d0-i3-s1" data-text="A whistleblower tells jurors that the social media giant&#x27;s policy towards children under 13 on Instagram was “don&#x27;t ask, don&#x27;t tell.”" onclick="speakSentence(this)" aria-label="朗读英文句子">A whistleblower tells jurors that the social media giant&#x27;s policy towards children under 13 on Instagram was “don&#x27;t ask, don&#x27;t tell.”</button></div>
+                  <div class="chinese-line">一名举报人告诉陪审团，这家社交媒体巨头对Instagram上13岁以下儿童采取的政策是“不问、不说”。</div>
+                </div>
+</div>
+</article>
+
+        <article class="news-card" id="d0-i4">
+          <div class="news-head">
+            <h3>肖勒姆溺亡事件</h3>
+            <button class="play-paragraph" onclick="playCard('d0-i4')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d0-i4-s0" data-text="A Palestinian couple and their teenage daughter who died in water off Shoreham in West Sussex are named by police." onclick="speakSentence(this)" aria-label="朗读英文句子">A Palestinian couple and their teenage daughter who died in water off Shoreham in West Sussex are named by police.</button>
+ 
+<button class="sentence" id="d0-i4-s1" data-text="Another child remains critical in hospital." onclick="speakSentence(this)" aria-label="朗读英文句子">Another child remains critical in hospital.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>警方公布了一对巴勒斯坦夫妇及其十几岁女儿的姓名。他们在英国西萨塞克斯郡肖勒姆附近海域溺亡。另一名儿童仍在医院接受治疗，情况危急。</div>
+</article>
+
+        <article class="news-card" id="d0-i5">
+          <div class="news-head">
+            <h3>乌克兰战时选举</h3>
+            <button class="play-paragraph" onclick="playCard('d0-i5')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d0-i5-s0" data-text="Ukraine&#x27;s popular ex-defence minister calls for wartime elections, in what is widely seen as the biggest challenge to Volodymyr Zelensky&#x27;s presidency since Russia&#x27;s invasion four and a half years ago." onclick="speakSentence(this)" aria-label="朗读英文句子">Ukraine&#x27;s popular ex-defence minister calls for wartime elections, in what is widely seen as the biggest challenge to Volodymyr Zelensky&#x27;s presidency since Russia&#x27;s invasion four and a half years ago.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>乌克兰一位颇受欢迎的前国防部长呼吁举行战时选举。这被广泛视为自四年半前俄罗斯入侵以来，泽连斯基总统任期内面临的最大挑战。</div>
+</article>
+
+        <article class="news-card" id="d0-i6">
+          <div class="news-head">
+            <h3>动画电影预告</h3>
+            <button class="play-paragraph" onclick="playCard('d0-i6')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="sentence-pairs">
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d0-i6-s0" data-text="Also coming up on The World Today." onclick="speakSentence(this)" aria-label="朗读英文句子">Also coming up on The World Today.</button></div>
+                  <div class="chinese-line">《今日世界》接下来还将为您带来：一部因剧情令人费解、画面粗糙而在网上走红的动画电影，是如何在中国成为票房热门的？</div>
+                </div>
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d0-i6-s1" data-text="Find out how this animated film that went viral for its confusing plot and terrible graphics became a box office hit in China." onclick="speakSentence(this)" aria-label="朗读英文句子">Find out how this animated film that went viral for its confusing plot and terrible graphics became a box office hit in China.</button></div>
+                  <div class="chinese-line">我们将为您揭晓。</div>
+                </div>
+</div>
+</article>
+</section>
+
+    <section class="day-section" id="day-1">
+      <div class="day-heading">
+        <div><span class="day-kicker">NEWS BRIEFING</span><h2>8月21日</h2></div>
+        <span class="video-tag">0821.mp4</span>
+      </div>
+    
+
+        <article class="news-card" id="d1-i0">
+          <div class="news-head">
+            <h3>开场</h3>
+            <button class="play-paragraph" onclick="playCard('d1-i0')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="sentence-pairs">
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d1-i0-s0" data-text="It&#x27;s 7pm in London." onclick="speakSentence(this)" aria-label="朗读英文句子">It&#x27;s 7pm in London.</button></div>
+                  <div class="chinese-line">现在是伦敦时间晚上7点。</div>
+                </div>
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d1-i0-s1" data-text="This is The World Today with me, Geeta Guru-Murthy." onclick="speakSentence(this)" aria-label="朗读英文句子">This is The World Today with me, Geeta Guru-Murthy.</button></div>
+                  <div class="chinese-line">这里是《今日世界》，我是主持人吉塔·古鲁穆尔蒂。</div>
+                </div>
+</div>
+</article>
+
+        <article class="news-card" id="d1-i1">
+          <div class="news-head">
+            <h3>哈里与梅根返回英国</h3>
+            <button class="play-paragraph" onclick="playCard('d1-i1')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="sentence-pairs">
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d1-i1-s0" data-text="Questions over who will pay for the security of Prince Harry, Meghan and their children after their surprise announcement they&#x27;re coming back to Britain." onclick="speakSentence(this)" aria-label="朗读英文句子">Questions over who will pay for the security of Prince Harry, Meghan and their children after their surprise announcement they&#x27;re coming back to Britain.</button></div>
+                  <div class="chinese-line">哈里王子和梅根意外宣布将返回英国，引发了由谁承担他们及其子女安保费用的疑问。</div>
+                </div>
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d1-i1-s1" data-text="The Prime Minister says their security arrangements are a private matter." onclick="speakSentence(this)" aria-label="朗读英文句子">The Prime Minister says their security arrangements are a private matter.</button></div>
+                  <div class="chinese-line">首相表示，他们的安保安排属于私人事务。</div>
+                </div>
+</div>
+</article>
+
+        <article class="news-card" id="d1-i2">
+          <div class="news-head">
+            <h3>现场发言</h3>
+            <button class="play-paragraph" onclick="playCard('d1-i2')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d1-i2-s0" data-text="It&#x27;s a matter for Harry and for Meghan, and we wish them well in the move that they&#x27;re making." onclick="speakSentence(this)" aria-label="朗读英文句子">It&#x27;s a matter for Harry and for Meghan, and we wish them well in the move that they&#x27;re making.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>这是哈里和梅根自己的事，我们祝愿他们此次搬迁一切顺利。</div>
+</article>
+
+        <article class="news-card" id="d1-i3">
+          <div class="news-head">
+            <h3>基辅遭袭</h3>
+            <button class="play-paragraph" onclick="playCard('d1-i3')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="sentence-pairs">
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d1-i3-s0" data-text="Aerial footage shows the extent of the damage in Kyiv." onclick="speakSentence(this)" aria-label="朗读英文句子">Aerial footage shows the extent of the damage in Kyiv.</button></div>
+                  <div class="chinese-line">航拍画面显示了基辅受损的严重程度。</div>
+                </div>
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d1-i3-s1" data-text="At least 15 people have been killed in the latest Russian attack." onclick="speakSentence(this)" aria-label="朗读英文句子">At least 15 people have been killed in the latest Russian attack.</button></div>
+                  <div class="chinese-line">在俄罗斯最新一轮袭击中，至少15人死亡。</div>
+                </div>
+</div>
+</article>
+
+        <article class="news-card" id="d1-i4">
+          <div class="news-head">
+            <h3>学者被停职</h3>
+            <button class="play-paragraph" onclick="playCard('d1-i4')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d1-i4-s0" data-text="The academic who accused the late Jason Arday of plagiarism has been suspended by his university amid an investigation into discrimination." onclick="speakSentence(this)" aria-label="朗读英文句子">The academic who accused the late Jason Arday of plagiarism has been suspended by his university amid an investigation into discrimination.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>曾指控已故学者杰森·阿尔戴抄袭的一名学者，在一项有关歧视的调查期间被其所在大学停职。</div>
+</article>
+
+        <article class="news-card" id="d1-i5">
+          <div class="news-head">
+            <h3>北极鲸群预告</h3>
+            <button class="play-paragraph" onclick="playCard('d1-i5')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d1-i5-s0" data-text="Also coming up on The World Today, a changing Arctic sea is attracting some very big visitors as thousands of whales arrive for dinner." onclick="speakSentence(this)" aria-label="朗读英文句子">Also coming up on The World Today, a changing Arctic sea is attracting some very big visitors as thousands of whales arrive for dinner.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>《今日世界》接下来还将报道：不断变化的北极海域正吸引一些体型庞大的访客，数以千计的鲸鱼来到这里觅食。</div>
+</article>
+</section>
+
+    <section class="day-section" id="day-2">
+      <div class="day-heading">
+        <div><span class="day-kicker">NEWS BRIEFING</span><h2>8月22日</h2></div>
+        <span class="video-tag">0822.mp4</span>
+      </div>
+    
+
+        <article class="news-card" id="d2-i0">
+          <div class="news-head">
+            <h3>开场</h3>
+            <button class="play-paragraph" onclick="playCard('d2-i0')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="sentence-pairs">
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d2-i0-s0" data-text="It is 7pm in London." onclick="speakSentence(this)" aria-label="朗读英文句子">It is 7pm in London.</button></div>
+                  <div class="chinese-line">现在是伦敦时间晚上7点。</div>
+                </div>
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d2-i0-s1" data-text="This is The World Today with Rich Preston." onclick="speakSentence(this)" aria-label="朗读英文句子">This is The World Today with Rich Preston.</button></div>
+                  <div class="chinese-line">这里是里奇·普雷斯顿为您主持的《今日世界》。</div>
+                </div>
+</div>
+</article>
+
+        <article class="news-card" id="d2-i1">
+          <div class="news-head">
+            <h3>哈里王子诉讼费用</h3>
+            <button class="play-paragraph" onclick="playCard('d2-i1')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d2-i1-s0" data-text="Prince Harry and six other claimants are ordered to pay millions of pounds in costs to the publisher of the Daily Mail." onclick="speakSentence(this)" aria-label="朗读英文句子">Prince Harry and six other claimants are ordered to pay millions of pounds in costs to the publisher of the Daily Mail.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>哈里王子和另外六名原告被责令向《每日邮报》的出版商支付数百万英镑的诉讼费用。</div>
+</article>
+
+        <article class="news-card" id="d2-i2">
+          <div class="news-head">
+            <h3>梅根洽谈重返演艺圈</h3>
+            <button class="play-paragraph" onclick="playCard('d2-i2')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d2-i2-s0" data-text="The BBC has learned that the Duchess of Sussex is in talks to return to acting with a role in the Netflix series The Gentlemen, created by Guy Ritchie." onclick="speakSentence(this)" aria-label="朗读英文句子">The BBC has learned that the Duchess of Sussex is in talks to return to acting with a role in the Netflix series The Gentlemen, created by Guy Ritchie.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>BBC获悉，苏塞克斯公爵夫人正洽谈重返演艺圈，拟在盖·里奇创作的Netflix剧集《绅士们》中出演一个角色。</div>
+</article>
+
+        <article class="news-card" id="d2-i3">
+          <div class="news-head">
+            <h3>秋季天气预警</h3>
+            <button class="play-paragraph" onclick="playCard('d2-i3')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d2-i3-s0" data-text="More intense storms, wind and rainfall are on the way this autumn as the warming Pacific Ocean affects our weather." onclick="speakSentence(this)" aria-label="朗读英文句子">More intense storms, wind and rainfall are on the way this autumn as the warming Pacific Ocean affects our weather.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>随着太平洋变暖影响我们的天气，今年秋季将迎来更猛烈的风暴、大风和降雨。</div>
+</article>
+
+        <article class="news-card" id="d2-i4">
+          <div class="news-head">
+            <h3>乌克兰购物中心遭袭</h3>
+            <button class="play-paragraph" onclick="playCard('d2-i4')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d2-i4-s0" data-text="Officials in Ukraine say Russian drone strikes on a shopping centre have killed at least 14 people." onclick="speakSentence(this)" aria-label="朗读英文句子">Officials in Ukraine say Russian drone strikes on a shopping centre have killed at least 14 people.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>乌克兰官员表示，俄罗斯无人机对一处购物中心发动袭击，已造成至少14人死亡。</div>
+</article>
+
+        <article class="news-card" id="d2-i5">
+          <div class="news-head">
+            <h3>演员访谈预告</h3>
+            <button class="play-paragraph" onclick="playCard('d2-i5')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="sentence-pairs">
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d2-i5-s0" data-text="Also coming up on The World Today, Bollywood and Hollywood." onclick="speakSentence(this)" aria-label="朗读英文句子">Also coming up on The World Today, Bollywood and Hollywood.</button></div>
+                  <div class="chinese-line">《今日世界》接下来还将聚焦宝莱坞与好莱坞。</div>
+                </div>
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d2-i5-s1" data-text="The actress Priyanka Chopra Jonas speaks to the BBC about a film she&#x27;s produced which looks at caste discrimination and love." onclick="speakSentence(this)" aria-label="朗读英文句子">The actress Priyanka Chopra Jonas speaks to the BBC about a film she&#x27;s produced which looks at caste discrimination and love.</button></div>
+                  <div class="chinese-line">演员朴雅卡·乔普拉·乔纳斯接受BBC采访，谈论她制作的一部探讨种姓歧视与爱情的电影。</div>
+                </div>
+</div>
+</article>
+</section>
+
+    <section class="day-section" id="day-3">
+      <div class="day-heading">
+        <div><span class="day-kicker">NEWS BRIEFING</span><h2>8月23日</h2></div>
+        <span class="video-tag">0823.mp4</span>
+      </div>
+    
+
+        <article class="news-card" id="d3-i0">
+          <div class="news-head">
+            <h3>开场</h3>
+            <button class="play-paragraph" onclick="playCard('d3-i0')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d3-i0-s0" data-text="Live from London, this is BBC News." onclick="speakSentence(this)" aria-label="朗读英文句子">Live from London, this is BBC News.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>这里是BBC新闻，从伦敦为您现场直播。</div>
+</article>
+
+        <article class="news-card" id="d3-i1">
+          <div class="news-head">
+            <h3>英格兰车祸</h3>
+            <button class="play-paragraph" onclick="playCard('d3-i1')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="sentence-pairs">
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d3-i1-s0" data-text="Two police officers are among seven people killed in a car crash in the northeast of England." onclick="speakSentence(this)" aria-label="朗读英文句子">Two police officers are among seven people killed in a car crash in the northeast of England.</button></div>
+                  <div class="chinese-line">英格兰东北部发生一起车祸，造成七人死亡，其中包括两名警员。</div>
+                </div>
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d3-i1-s1" data-text="The officers have been named as PC Matthew Blades and PC Tom Clough." onclick="speakSentence(this)" aria-label="朗读英文句子">The officers have been named as PC Matthew Blades and PC Tom Clough.</button></div>
+                  <div class="chinese-line">两名警员的姓名已公布，分别是马修·布莱兹和汤姆·克拉夫。</div>
+                </div>
+</div>
+</article>
+
+        <article class="news-card" id="d3-i2">
+          <div class="news-head">
+            <h3>现场发言</h3>
+            <button class="play-paragraph" onclick="playCard('d3-i2')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d3-i2-s0" data-text="These were brave officers protecting our communities and serving our residents who didn&#x27;t return home to their families." onclick="speakSentence(this)" aria-label="朗读英文句子">These were brave officers protecting our communities and serving our residents who didn&#x27;t return home to their families.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>他们是保护我们社区、服务我们居民的勇敢警员，却没能回家与家人团聚。</div>
+</article>
+
+        <article class="news-card" id="d3-i3">
+          <div class="news-head">
+            <h3>加拿大回应美国关税</h3>
+            <button class="play-paragraph" onclick="playCard('d3-i3')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="sentence-pairs">
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d3-i3-s0" data-text="Canada&#x27;s Prime Minister stands defiant against US tariffs." onclick="speakSentence(this)" aria-label="朗读英文句子">Canada&#x27;s Prime Minister stands defiant against US tariffs.</button></div>
+                  <div class="chinese-line">加拿大总理对美国关税政策持强硬反对立场。</div>
+                </div>
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d3-i3-s1" data-text="Mark Carney says he can&#x27;t accept what the Trump administration offered and won&#x27;t give them what they want." onclick="speakSentence(this)" aria-label="朗读英文句子">Mark Carney says he can&#x27;t accept what the Trump administration offered and won&#x27;t give them what they want.</button></div>
+                  <div class="chinese-line">马克·卡尼表示，他无法接受特朗普政府提出的条件，也不会满足对方的要求。</div>
+                </div>
+</div>
+</article>
+
+        <article class="news-card" id="d3-i4">
+          <div class="news-head">
+            <h3>卡尼发言</h3>
+            <button class="play-paragraph" onclick="playCard('d3-i4')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d3-i4-s0" data-text="In recent days, the United States proposed new terms that were uneconomic, unfair and undermined the net benefits for Canada and called into question the reliability of any deal." onclick="speakSentence(this)" aria-label="朗读英文句子">In recent days, the United States proposed new terms that were uneconomic, unfair and undermined the net benefits for Canada and called into question the reliability of any deal.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>近日，美国提出了新的条款。这些条款不符合经济利益、不公平，损害了加拿大的净收益，也使任何协议的可靠性受到质疑。</div>
+</article>
+
+        <article class="news-card" id="d3-i5">
+          <div class="news-head">
+            <h3>法国援助乌克兰</h3>
+            <button class="play-paragraph" onclick="playCard('d3-i5')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d3-i5-s0" data-text="France will send interceptors to Ukraine to protect it against ballistic missiles from Russia following a double strike on a mall in Kyiv." onclick="speakSentence(this)" aria-label="朗读英文句子">France will send interceptors to Ukraine to protect it against ballistic missiles from Russia following a double strike on a mall in Kyiv.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>在基辅一家购物中心接连遭到两次袭击后，法国将向乌克兰提供拦截导弹，帮助其防御俄罗斯的弹道导弹。</div>
+</article>
+
+        <article class="news-card" id="d3-i6">
+          <div class="news-head">
+            <h3>人形机器人运动会</h3>
+            <button class="play-paragraph" onclick="playCard('d3-i6')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="sentence-pairs">
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d3-i6-s0" data-text="And the World Humanoid Robot Games are underway in China." onclick="speakSentence(this)" aria-label="朗读英文句子">And the World Humanoid Robot Games are underway in China.</button></div>
+                  <div class="chinese-line">世界人形机器人运动会正在中国举行。</div>
+                </div>
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d3-i6-s1" data-text="Robots showing their skills in boxing, sprints and even household tasks." onclick="speakSentence(this)" aria-label="朗读英文句子">Robots showing their skills in boxing, sprints and even household tasks.</button></div>
+                  <div class="chinese-line">机器人展示拳击、短跑乃至家务方面的技能。</div>
+                </div>
+</div>
+</article>
+</section>
+
+    <section class="day-section" id="day-4">
+      <div class="day-heading">
+        <div><span class="day-kicker">NEWS BRIEFING</span><h2>8月24日</h2></div>
+        <span class="video-tag">0824.mp4</span>
+      </div>
+    
+
+        <article class="news-card" id="d4-i0">
+          <div class="news-head">
+            <h3>开场</h3>
+            <button class="play-paragraph" onclick="playCard('d4-i0')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d4-i0-s0" data-text="Live from London, this is BBC News." onclick="speakSentence(this)" aria-label="朗读英文句子">Live from London, this is BBC News.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>这里是BBC新闻，从伦敦为您现场直播。</div>
+</article>
+
+        <article class="news-card" id="d4-i1">
+          <div class="news-head">
+            <h3>家属悼念遇难警员</h3>
+            <button class="play-paragraph" onclick="playCard('d4-i1')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d4-i1-s0" data-text="The family of one of the two police officers killed in a crash in the northeast of England say PC Tom Clough was “our hero” and fought for his country to make it a better place." onclick="speakSentence(this)" aria-label="朗读英文句子">The family of one of the two police officers killed in a crash in the northeast of England say PC Tom Clough was “our hero” and fought for his country to make it a better place.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>英格兰东北部车祸中遇难的两名警员之一汤姆·克拉夫，其家属称他是“我们的英雄”，他曾为国家而战，努力让国家变得更美好。</div>
+</article>
+
+        <article class="news-card" id="d4-i2">
+          <div class="news-head">
+            <h3>车祸遇难者身份公布</h3>
+            <button class="play-paragraph" onclick="playCard('d4-i2')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="sentence-pairs">
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d4-i2-s0" data-text="Police also name the five people killed in the car that was driving on the wrong side of the road." onclick="speakSentence(this)" aria-label="朗读英文句子">Police also name the five people killed in the car that was driving on the wrong side of the road.</button></div>
+                  <div class="chinese-line">警方还公布了逆行车辆中五名遇难者的姓名。</div>
+                </div>
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d4-i2-s1" data-text="They were all aged from 17 to 23." onclick="speakSentence(this)" aria-label="朗读英文句子">They were all aged from 17 to 23.</button></div>
+                  <div class="chinese-line">他们的年龄均在17至23岁之间。</div>
+                </div>
+</div>
+</article>
+
+        <article class="news-card" id="d4-i3">
+          <div class="news-head">
+            <h3>乌克兰政府腐败问题</h3>
+            <button class="play-paragraph" onclick="playCard('d4-i3')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d4-i3-s0" data-text="Ukraine&#x27;s sacked defence minister tells the BBC that President Zelensky should be asked questions about corruption in his government, but says he hasn&#x27;t seen the president engage in corrupt activity himself." onclick="speakSentence(this)" aria-label="朗读英文句子">Ukraine&#x27;s sacked defence minister tells the BBC that President Zelensky should be asked questions about corruption in his government, but says he hasn&#x27;t seen the president engage in corrupt activity himself.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>乌克兰被解职的国防部长告诉BBC，应该就政府内部的腐败问题向泽连斯基总统提出质询，但他表示，自己没有看到总统本人参与腐败活动。</div>
+</article>
+
+        <article class="news-card" id="d4-i4">
+          <div class="news-head">
+            <h3>采访原话</h3>
+            <button class="play-paragraph" onclick="playCard('d4-i4')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="sentence-pairs">
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d4-i4-s0" data-text="I think that probably you better ask the president about this." onclick="speakSentence(this)" aria-label="朗读英文句子">I think that probably you better ask the president about this.</button></div>
+                  <div class="chinese-line">我想，这件事你或许最好去问总统本人。</div>
+                </div>
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d4-i4-s1" data-text="Do an interview with him, have a conversation with him in front of the world." onclick="speakSentence(this)" aria-label="朗读英文句子">Do an interview with him, have a conversation with him in front of the world.</button></div>
+                  <div class="chinese-line">采访他，在全世界面前与他进行对话。</div>
+                </div>
+</div>
+</article>
+
+        <article class="news-card" id="d4-i5">
+          <div class="news-head">
+            <h3>埃博拉疫情</h3>
+            <button class="play-paragraph" onclick="playCard('d4-i5')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d4-i5-s0" data-text="It&#x27;s been 100 days since the Ebola outbreak began in the Democratic Republic of Congo and Uganda, killing more than two and a half thousand people." onclick="speakSentence(this)" aria-label="朗读英文句子">It&#x27;s been 100 days since the Ebola outbreak began in the Democratic Republic of Congo and Uganda, killing more than two and a half thousand people.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>刚果民主共和国和乌干达的埃博拉疫情暴发至今已100天，造成超过2500人死亡。</div>
+</article>
+
+        <article class="news-card" id="d4-i6">
+          <div class="news-head">
+            <h3>机器人打破纪录</h3>
+            <button class="play-paragraph" onclick="playCard('d4-i6')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d4-i6-s0" data-text="And a Chinese robot breaks Usain Bolt&#x27;s record at the Humanoid Robot Games in Beijing." onclick="speakSentence(this)" aria-label="朗读英文句子">And a Chinese robot breaks Usain Bolt&#x27;s record at the Humanoid Robot Games in Beijing.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>在北京举行的人形机器人运动会上，一台中国机器人打破了尤塞恩·博尔特的纪录。</div>
+</article>
+</section>
+
+    <section class="day-section" id="day-5">
+      <div class="day-heading">
+        <div><span class="day-kicker">NEWS BRIEFING</span><h2>8月25日</h2></div>
+        <span class="video-tag">0825.mp4</span>
+      </div>
+    
+
+        <article class="news-card" id="d5-i0">
+          <div class="news-head">
+            <h3>开场</h3>
+            <button class="play-paragraph" onclick="playCard('d5-i0')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="sentence-pairs">
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d5-i0-s0" data-text="It&#x27;s 7pm in London." onclick="speakSentence(this)" aria-label="朗读英文句子">It&#x27;s 7pm in London.</button></div>
+                  <div class="chinese-line">现在是伦敦时间晚上7点。</div>
+                </div>
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d5-i0-s1" data-text="This is The World Today with Anita McVeigh." onclick="speakSentence(this)" aria-label="朗读英文句子">This is The World Today with Anita McVeigh.</button></div>
+                  <div class="chinese-line">这里是安妮塔·麦克维主持的《今日世界》。</div>
+                </div>
+</div>
+</article>
+
+        <article class="news-card" id="d5-i1">
+          <div class="news-head">
+            <h3>美国对伊朗实施新制裁</h3>
+            <button class="play-paragraph" onclick="playCard('d5-i1')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="sentence-pairs">
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d5-i1-s0" data-text="The US Treasury Secretary Scott Bessent unveils a new wave of sanctions against Iran." onclick="speakSentence(this)" aria-label="朗读英文句子">The US Treasury Secretary Scott Bessent unveils a new wave of sanctions against Iran.</button></div>
+                  <div class="chinese-line">美国财政部长斯科特·贝森特宣布对伊朗实施新一轮制裁。</div>
+                </div>
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d5-i1-s1" data-text="He said the aim was to sever Iran&#x27;s links with the global economy." onclick="speakSentence(this)" aria-label="朗读英文句子">He said the aim was to sever Iran&#x27;s links with the global economy.</button></div>
+                  <div class="chinese-line">他表示，此举旨在切断伊朗与全球经济的联系。</div>
+                </div>
+</div>
+</article>
+
+        <article class="news-card" id="d5-i2">
+          <div class="news-head">
+            <h3>英国对乌克兰的支持</h3>
+            <button class="play-paragraph" onclick="playCard('d5-i2')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d5-i2-s0" data-text="As the Kremlin accuses Britain of adding fuel to the fire in the Ukraine conflict, Andy Burnham pledges to increase support for Kyiv and criticises Moscow&#x27;s tactics." onclick="speakSentence(this)" aria-label="朗读英文句子">As the Kremlin accuses Britain of adding fuel to the fire in the Ukraine conflict, Andy Burnham pledges to increase support for Kyiv and criticises Moscow&#x27;s tactics.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>在克里姆林宫指责英国在乌克兰冲突中火上浇油之际，安迪·伯纳姆承诺加强对基辅的支持，并批评莫斯科的策略。</div>
+</article>
+
+        <article class="news-card" id="d5-i3">
+          <div class="news-head">
+            <h3>现场发言</h3>
+            <button class="play-paragraph" onclick="playCard('d5-i3')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="sentence-pairs">
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d5-i3-s0" data-text="It&#x27;s clear Russia is running out of options." onclick="speakSentence(this)" aria-label="朗读英文句子">It&#x27;s clear Russia is running out of options.</button></div>
+                  <div class="chinese-line">很明显，俄罗斯可用的办法正越来越少。</div>
+                </div>
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d5-i3-s1" data-text="So Putin is now hoping he can win through a campaign of terror." onclick="speakSentence(this)" aria-label="朗读英文句子">So Putin is now hoping he can win through a campaign of terror.</button></div>
+                  <div class="chinese-line">因此，普京现在寄希望于通过一系列恐怖行动取得胜利。</div>
+                </div>
+</div>
+</article>
+
+        <article class="news-card" id="d5-i4">
+          <div class="news-head">
+            <h3>蒂赛德车祸调查</h3>
+            <button class="play-paragraph" onclick="playCard('d5-i4')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d5-i4-s0" data-text="Twelve people are arrested in connection with Saturday&#x27;s fatal crash on Teesside, in which seven people, including two police officers, were killed." onclick="speakSentence(this)" aria-label="朗读英文句子">Twelve people are arrested in connection with Saturday&#x27;s fatal crash on Teesside, in which seven people, including two police officers, were killed.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>12人因涉嫌与周六发生在蒂赛德的致命车祸有关而被捕。该事故造成七人死亡，其中包括两名警员。</div>
+</article>
+
+        <article class="news-card" id="d5-i5">
+          <div class="news-head">
+            <h3>内华达州山火</h3>
+            <button class="play-paragraph" onclick="playCard('d5-i5')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d5-i5-s0" data-text="90,000 people have been told to evacuate their homes in the US state of Nevada as a large wildfire approaches the city of Reno." onclick="speakSentence(this)" aria-label="朗读英文句子">90,000 people have been told to evacuate their homes in the US state of Nevada as a large wildfire approaches the city of Reno.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>一场大型山火正逼近美国内华达州里诺市，9万人已被要求撤离家园。</div>
+</article>
+
+        <article class="news-card" id="d5-i6">
+          <div class="news-head">
+            <h3>口音研究预告</h3>
+            <button class="play-paragraph" onclick="playCard('d5-i6')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="sentence-pairs">
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d5-i6-s0" data-text="And also coming up on The World Today, what does your accent say about you?" onclick="speakSentence(this)" aria-label="朗读英文句子">And also coming up on The World Today, what does your accent say about you?</button></div>
+                  <div class="chinese-line">《今日世界》接下来还将关注：你的口音反映了怎样的你？</div>
+                </div>
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d5-i6-s1" data-text="New research suggests that 13% of people admit to changing the way they speak to fit in at work." onclick="speakSentence(this)" aria-label="朗读英文句子">New research suggests that 13% of people admit to changing the way they speak to fit in at work.</button></div>
+                  <div class="chinese-line">一项新研究显示，13%的人承认为了融入工作环境而改变自己的说话方式。</div>
+                </div>
+</div>
+</article>
+</section>
+
+    <section class="day-section" id="day-6">
+      <div class="day-heading">
+        <div><span class="day-kicker">NEWS BRIEFING</span><h2>8月26日</h2></div>
+        <span class="video-tag">0826.mp4</span>
+      </div>
+    
+
+        <article class="news-card" id="d6-i0">
+          <div class="news-head">
+            <h3>开场</h3>
+            <button class="play-paragraph" onclick="playCard('d6-i0')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d6-i0-s0" data-text="I&#x27;m Caitríona Perry in Washington, and this is BBC World News America." onclick="speakSentence(this)" aria-label="朗读英文句子">I&#x27;m Caitríona Perry in Washington, and this is BBC World News America.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>我是位于华盛顿的凯特里奥娜·佩里，这里是BBC《美国世界新闻》。</div>
+</article>
+
+        <article class="news-card" id="d6-i1">
+          <div class="news-head">
+            <h3>多莉帕顿</h3>
+            <button class="play-paragraph" onclick="playCard('d6-i1')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="sentence-pairs">
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d6-i1-s0" data-text="Global icon and the queen of country music, Dolly Parton, has died at the age of 80." onclick="speakSentence(this)" aria-label="朗读英文句子">Global icon and the queen of country music, Dolly Parton, has died at the age of 80.</button></div>
+                  <div class="chinese-line">全球偶像、乡村音乐女王多莉·帕顿去世，享年80岁。</div>
+                </div>
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d6-i1-s1" data-text="We take a look back on her life and legacy." onclick="speakSentence(this)" aria-label="朗读英文句子">We take a look back on her life and legacy.</button></div>
+                  <div class="chinese-line">我们将回顾她的一生及其留下的宝贵遗产。</div>
+                </div>
+</div>
+</article>
+
+        <article class="news-card" id="d6-i2">
+          <div class="news-head">
+            <h3>加拿大关税反制</h3>
+            <button class="play-paragraph" onclick="playCard('d6-i2')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d6-i2-s0" data-text="Canada strikes back at the US, announcing retaliatory measures against President Trump&#x27;s latest wave of tariffs." onclick="speakSentence(this)" aria-label="朗读英文句子">Canada strikes back at the US, announcing retaliatory measures against President Trump&#x27;s latest wave of tariffs.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>加拿大向美国发起反击，宣布针对特朗普总统最新一轮关税采取报复性措施。</div>
+</article>
+</section>
+
+    <section class="day-section" id="day-7">
+      <div class="day-heading">
+        <div><span class="day-kicker">NEWS BRIEFING</span><h2>8月27日</h2></div>
+        <span class="video-tag">0827.mp4</span>
+      </div>
+    
+
+        <article class="news-card" id="d7-i0">
+          <div class="news-head">
+            <h3>开场</h3>
+            <button class="play-paragraph" onclick="playCard('d7-i0')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="sentence-pairs">
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d7-i0-s0" data-text="It&#x27;s 7pm in London." onclick="speakSentence(this)" aria-label="朗读英文句子">It&#x27;s 7pm in London.</button></div>
+                  <div class="chinese-line">现在是伦敦时间晚上7点。</div>
+                </div>
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d7-i0-s1" data-text="This is The World Today with Geeta Guru-Murthy." onclick="speakSentence(this)" aria-label="朗读英文句子">This is The World Today with Geeta Guru-Murthy.</button></div>
+                  <div class="chinese-line">这里是吉塔·古鲁穆尔蒂主持的《今日世界》。</div>
+                </div>
+</div>
+</article>
+
+        <article class="news-card" id="d7-i1">
+          <div class="news-head">
+            <h3>尼泊尔山洪</h3>
+            <button class="play-paragraph" onclick="playCard('d7-i1')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d7-i1-s0" data-text="Hundreds of people are missing after devastating flash floods sweep through northern Nepal." onclick="speakSentence(this)" aria-label="朗读英文句子">Hundreds of people are missing after devastating flash floods sweep through northern Nepal.</button>
+ 
+<button class="sentence" id="d7-i1-s1" data-text="More than 150 are dead." onclick="speakSentence(this)" aria-label="朗读英文句子">More than 150 are dead.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>毁灭性山洪席卷尼泊尔北部，造成数百人失踪、超过150人死亡。</div>
+</article>
+
+        <article class="news-card" id="d7-i2">
+          <div class="news-head">
+            <h3>Meta达成和解</h3>
+            <button class="play-paragraph" onclick="playCard('d7-i2')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d7-i2-s0" data-text="Meta agrees to a multi-billion dollar settlement over claims that its social media platforms are addictive and harm children." onclick="speakSentence(this)" aria-label="朗读英文句子">Meta agrees to a multi-billion dollar settlement over claims that its social media platforms are addictive and harm children.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>针对旗下社交媒体平台具有成瘾性并伤害儿童的指控，Meta同意达成数十亿美元的和解协议。</div>
+</article>
+
+        <article class="news-card" id="d7-i3">
+          <div class="news-head">
+            <h3>伊斯兰堡医院火灾</h3>
+            <button class="play-paragraph" onclick="playCard('d7-i3')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="sentence-pairs">
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d7-i3-s0" data-text="Fourteen newborn babies are killed as fire ravages a maternity ward in Islamabad." onclick="speakSentence(this)" aria-label="朗读英文句子">Fourteen newborn babies are killed as fire ravages a maternity ward in Islamabad.</button></div>
+                  <div class="chinese-line">伊斯兰堡一家医院的产科病房遭大火吞噬，造成14名新生儿死亡。</div>
+                </div>
+
+                <div class="sentence-pair">
+                  <div class="english-line"><button class="sentence" id="d7-i3-s1" data-text="The health minister has been suspended." onclick="speakSentence(this)" aria-label="朗读英文句子">The health minister has been suspended.</button></div>
+                  <div class="chinese-line">卫生部长已被停职。</div>
+                </div>
+</div>
+</article>
+
+        <article class="news-card" id="d7-i4">
+          <div class="news-head">
+            <h3>哈里与梅根返英预告</h3>
+            <button class="play-paragraph" onclick="playCard('d7-i4')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d7-i4-s0" data-text="Also coming up on The World Today, Prince Harry and Meghan are back in the UK six years after stepping back as working royals and moving to America." onclick="speakSentence(this)" aria-label="朗读英文句子">Also coming up on The World Today, Prince Harry and Meghan are back in the UK six years after stepping back as working royals and moving to America.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>《今日世界》接下来还将报道：哈里王子和梅根在退出王室公务、移居美国六年后返回英国。</div>
+</article>
+
+        <article class="news-card" id="d7-i5">
+          <div class="news-head">
+            <h3>悼念多莉帕顿</h3>
+            <button class="play-paragraph" onclick="playCard('d7-i5')" aria-label="朗读本段">▶ 本段</button>
+          </div>
+        
+<div class="english-line english-paragraph">
+<button class="sentence" id="d7-i5-s0" data-text="And Miley Cyrus leads tributes to her “angel godmother” Dolly Parton following the death of the country music superstar." onclick="speakSentence(this)" aria-label="朗读英文句子">And Miley Cyrus leads tributes to her “angel godmother” Dolly Parton following the death of the country music superstar.</button>
+</div>
+<div class="chinese-line paragraph-translation"><span class="translation-label">中文对照</span>乡村音乐巨星多莉·帕顿去世后，麦莉·赛勒斯带头表达悼念，称自己的教母是“天使般的教母”。</div>
+</article>
+</section>
+<div class="footer-note">
+声音说明：本点读器使用浏览器/设备的语音合成，不是某位真实主播的录音，也不能保证所有设备都提供专业新闻主播音色。它会优先选择 en-US 美式英语，并按男声/女声偏好匹配可用声音。若没有合适声音，可在 iPhone「设置 → 辅助使用 → 朗读内容 → 声音」中下载增强版英语声音。
+</div>
+</main>
+
+<div class="controls">
+  <div class="voice-row">
+    <button id="maleBtn" class="voice-mode active" onclick="setGender('male')">♂ 美式男声</button>
+    <button id="femaleBtn" class="voice-mode" onclick="setGender('female')">♀ 美式女声</button>
+  </div>
+  <div class="control-row">
+    <select id="voiceSelect" aria-label="选择英文声音"><option>正在加载声音…</option></select>
+    <button class="icon-btn" id="rateToggle" onclick="toggleRate()" aria-label="调节语速">0.92×</button>
+    <button class="icon-btn" onclick="repeatCurrent()" aria-label="重听">↻</button>
+    <button class="icon-btn" onclick="stopSpeech()" aria-label="停止">■</button>
+  </div>
+  <div id="ratePanel" class="rate-panel">
+    <span>语速</span><input id="rate" type="range" min="0.55" max="1.25" step="0.05" value="0.92"><span id="rateValue">0.92×</span>
+  </div>
+  <div id="voiceStatus" class="status">正在寻找美式英语声音…</div>
+</div>
+
+<script>
+const synth = window.speechSynthesis;
+let voices = [];
+let gender = "male";
+let currentEl = null;
+let currentText = "";
+let lastCardId = null;
+let activeQueue = [];
+let queueIndex = 0;
+let isQueuePlaying = false;
+
+const voiceSelect = document.getElementById("voiceSelect");
+const voiceStatus = document.getElementById("voiceStatus");
+const rate = document.getElementById("rate");
+const rateValue = document.getElementById("rateValue");
+const rateToggle = document.getElementById("rateToggle");
+
+const maleNames = [
+  "aaron","alex","fred","tom","evan","nathan","ralph","bruce","albert",
+  "daniel","david","guy","davis","jason","tony","matthew","mark","lee",
+  "joey","justin","eric","brian","kevin","roger","stephen","christopher"
+];
+const femaleNames = [
+  "ava","samantha","allison","susan","victoria","zira","jenny","aria","zoe",
+  "nicky","karen","moira","tessa","serena","joanna","michelle","olivia",
+  "emma","amy","kate","sara","laura","emily","jennifer","kendra","kimberly",
+  "salli","ivy","jessica","fiona","monica","lisa","siri voice 2","siri voice 4"
+];
+
+function nameGenderScore(v, g) {
+  const name = (v.name || "").toLowerCase();
+  const names = g === "male" ? maleNames : femaleNames;
+  const opposites = g === "male" ? femaleNames : maleNames;
+  let score = 0;
+  for (let i=0; i<names.length; i++) {
+    if (name.includes(names[i])) { score += 55 - Math.min(i,35)*0.5; break; }
+  }
+  for (let i=0; i<opposites.length; i++) {
+    if (name.includes(opposites[i])) { score -= 65; break; }
+  }
+  if (/\bmale\b/.test(name)) score += g === "male" ? 70 : -70;
+  if (/\bfemale\b/.test(name)) score += g === "female" ? 70 : -70;
+  return score;
+}
+
+function voiceScore(v, g) {
+  const lang = (v.lang || "").toLowerCase().replace("_","-");
+  const name = (v.name || "").toLowerCase();
+  let score = 0;
+  if (lang === "en-us") score += 150;
+  else if (lang.startsWith("en-us-")) score += 140;
+  else if (lang.startsWith("en")) score += 40;
+  if (/enhanced|premium|natural|neural|online/.test(name)) score += 20;
+  score += nameGenderScore(v, g);
+  if (v.default) score += 1;
+  return score;
+}
+
+function loadVoices() {
+  const all = synth.getVoices();
+  if (!all.length) {
+    voiceStatus.textContent = "暂未读取到系统声音；请稍后再试或点一下页面。";
+    return;
+  }
+  voices = all.filter(v => /^en(-|_)/i.test(v.lang));
+  if (!voices.length) voices = all;
+  voices.sort((a,b) => voiceScore(b, gender)-voiceScore(a, gender));
+  const prev = voiceSelect.value;
+  voiceSelect.innerHTML = "";
+  voices.forEach((v, idx) => {
+    const o = document.createElement("option");
+    o.value = String(idx);
+    o.textContent = `${v.name} · ${v.lang}`;
+    voiceSelect.appendChild(o);
+  });
+  const best = findBestVoiceIndex(gender);
+  voiceSelect.value = String(best);
+  updateStatus();
+}
+function findBestVoiceIndex(g) {
+  if (!voices.length) return 0;
+  let best=0, bestScore=-Infinity;
+  voices.forEach((v,i)=>{const s=voiceScore(v,g); if(s>bestScore){bestScore=s;best=i;}});
+  return best;
+}
+function updateStatus() {
+  const v = voices[Number(voiceSelect.value)];
+  const label = gender === "male" ? "美式男声优先" : "美式女声优先";
+  if (v) voiceStatus.textContent = `${label} · 当前：${v.name} (${v.lang})`;
+}
+function setGender(g) {
+  gender = g;
+  document.getElementById("maleBtn").classList.toggle("active", g==="male");
+  document.getElementById("femaleBtn").classList.toggle("active", g==="female");
+  if (voices.length) {
+    voices.sort((a,b)=>voiceScore(b,g)-voiceScore(a,g));
+    const old = voiceSelect.value;
+    voiceSelect.innerHTML = "";
+    voices.forEach((v,idx)=>{
+      const o=document.createElement("option");
+      o.value=String(idx); o.textContent=`${v.name} · ${v.lang}`;
+      voiceSelect.appendChild(o);
+    });
+    voiceSelect.value=String(findBestVoiceIndex(g));
+    updateStatus();
+  } else loadVoices();
+}
+voiceSelect.addEventListener("change", updateStatus);
+loadVoices();
+if ("onvoiceschanged" in synth) synth.onvoiceschanged = loadVoices;
+
+let primed = false;
+function primeVoices() {
+  if (primed) return;
+  primed = true;
+  try {
+    const u = new SpeechSynthesisUtterance(" ");
+    u.lang = "en-US"; u.volume = 0;
+    synth.speak(u); synth.cancel();
+  } catch(e) {}
+  setTimeout(loadVoices, 150);
+  setTimeout(loadVoices, 650);
+}
+document.addEventListener("touchstart", primeVoices, {once:true, passive:true});
+document.addEventListener("click", primeVoices, {once:true});
+
+function updateRate() {
+  const txt = Number(rate.value).toFixed(2) + "×";
+  rateValue.textContent = txt;
+  rateToggle.textContent = txt;
+}
+rate.addEventListener("input", updateRate);
+function toggleRate(){document.getElementById("ratePanel").classList.toggle("show");}
+
+function clearHighlight() {
+  document.querySelectorAll(".sentence.speaking").forEach(el=>el.classList.remove("speaking"));
+  currentEl = null;
+}
+function stopSpeech() {
+  synth.cancel();
+  clearHighlight();
+  activeQueue = [];
+  queueIndex = 0;
+  isQueuePlaying = false;
+}
+function getUtterance(text) {
+  const u = new SpeechSynthesisUtterance(text);
+  const v = voices[Number(voiceSelect.value)];
+  if (v) {u.voice=v; u.lang=v.lang || "en-US";}
+  else u.lang="en-US";
+  u.rate = Number(rate.value);
+  u.pitch = gender === "male" ? 0.96 : 1.0;
+  u.volume = 1;
+  return u;
+}
+function speakSentence(el) {
+  stopSpeech();
+  currentText = el.dataset.text || el.textContent;
+  currentEl = el;
+  el.classList.add("speaking");
+  const r = el.getBoundingClientRect();
+  if (r.top < 75 || r.bottom > window.innerHeight - 145) {
+    el.scrollIntoView({behavior:"smooth", block:"center"});
+  }
+  const u = getUtterance(currentText);
+  u.onend = () => { if(currentEl===el) el.classList.remove("speaking"); if(currentEl===el) currentEl=null; };
+  u.onerror = () => { if(currentEl===el) el.classList.remove("speaking"); if(currentEl===el) currentEl=null; };
+  synth.speak(u);
+}
+function playCard(id) {
+  stopSpeech();
+  lastCardId = id;
+  activeQueue = [...document.querySelectorAll(`#${CSS.escape(id)} .sentence`)];
+  if (!activeQueue.length) return;
+  queueIndex = 0;
+  isQueuePlaying = true;
+  playNext();
+}
+function playNext() {
+  if (!isQueuePlaying || queueIndex >= activeQueue.length) {
+    isQueuePlaying = false; clearHighlight(); return;
+  }
+  clearHighlight();
+  const el = activeQueue[queueIndex];
+  currentEl = el;
+  currentText = el.dataset.text || el.textContent;
+  el.classList.add("speaking");
+  const r = el.getBoundingClientRect();
+  if (r.top < 75 || r.bottom > window.innerHeight - 145) {
+    el.scrollIntoView({behavior:"smooth", block:"center"});
+  }
+  const u = getUtterance(currentText);
+  u.onend = () => {
+    if (currentEl===el) el.classList.remove("speaking");
+    queueIndex++;
+    playNext();
+  };
+  u.onerror = () => {
+    if (currentEl===el) el.classList.remove("speaking");
+    queueIndex++;
+    playNext();
+  };
+  synth.speak(u);
+}
+function repeatCurrent() {
+  if (currentEl) { speakSentence(currentEl); return; }
+  if (currentText) {
+    const el=[...document.querySelectorAll(".sentence")].find(x=>(x.dataset.text||x.textContent)===currentText);
+    if(el) speakSentence(el);
+  }
+}
+window.addEventListener("beforeunload",()=>synth.cancel());
+document.addEventListener("visibilitychange",()=>{if(document.hidden)synth.pause();else if(synth.paused)synth.resume();});
+if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+  window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+}
+</script>
+</body>
+</html>
